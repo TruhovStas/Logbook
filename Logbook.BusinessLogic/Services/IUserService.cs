@@ -1,7 +1,7 @@
-﻿using EventsWeb.BusinessLogic.Models;
-using EventsWeb.BusinessLogic.Models.Users;
+﻿using Logbook.BusinessLogic.Models;
+using Logbook.BusinessLogic.Models.Users;
 
-namespace EventsWeb.BusinessLogic.Services
+namespace Logbook.BusinessLogic.Services
 {
     public interface IUserService
     {

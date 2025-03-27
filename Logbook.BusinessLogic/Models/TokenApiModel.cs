@@ -1,4 +1,4 @@
-﻿namespace EventsWeb.BusinessLogic.Models
+﻿namespace Logbook.BusinessLogic.Models
 {
     public class TokenApiModel
     {

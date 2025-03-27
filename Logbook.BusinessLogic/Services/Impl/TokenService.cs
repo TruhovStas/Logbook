@@ -1,5 +1,5 @@
-﻿using EventsWeb.BusinessLogic.Models;
-using EventsWeb.DataAccess.Entities;
+﻿using Logbook.BusinessLogic.Models;
+using Logbook.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EventsWeb.BusinessLogic.Services.Impl
+namespace Logbook.BusinessLogic.Services.Impl
 {
     public class TokenService : ITokenService
     {

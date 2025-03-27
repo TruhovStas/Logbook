@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EventsWeb.BusinessLogic.Models.Users;
-using EventsWeb.BusinessLogic.Models;
+using Logbook.BusinessLogic.Models.Users;
+using Logbook.BusinessLogic.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using EventsWeb.DataAccess.Entities;
+using Logbook.DataAccess.Entities;
 
-namespace EventsWeb.BusinessLogic.Services.Impl
+namespace Logbook.BusinessLogic.Services.Impl
 {
     public class UserService : IUserService
     {
@@ -58,7 +58,7 @@ namespace EventsWeb.BusinessLogic.Services.Impl
                 {
                     new Claim(ClaimTypes.Name, newUser.UserName),
                     new Claim(ClaimTypes.NameIdentifier, newUser.Id.ToString()),
-                    new Claim(ClaimTypes.Email, newUser.Email),
+                    new Claim(ClaimTypes.UserData, newUser.Fio),
                     new Claim(ClaimTypes.Role, "User")
                 };
             var addedUser = await _userManager.FindByNameAsync(newUser.UserName);

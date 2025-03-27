@@ -1,20 +1,20 @@
-using EventsWeb.BusinessLogic.Services.Impl;
-using EventsWeb.BusinessLogic.Services;
-using EventsWeb.DataAccess;
+using Logbook.BusinessLogic.Services.Impl;
+using Logbook.BusinessLogic.Services;
+using Logbook.DataAccess;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using EventsWeb.Api;
-using EventsWeb.BusinessLogic.MappingProfiles;
+using Logbook.Api;
+using Logbook.BusinessLogic.MappingProfiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using EventsWeb.Api.Middlewares;
+using Logbook.Api.Middlewares;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
-using EventsWeb.DataAccess.Entities;
+using Logbook.DataAccess.Entities;
 
-namespace EventsWeb
+namespace Logbook
 {
     public class Program
     {
@@ -31,9 +31,10 @@ namespace EventsWeb
             builder.Services.AddAutoMapper(typeof(IMappingProfile));
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<IValidator>();
-            builder.Services.AddTransient<IFileService, FileService>();
-            builder.Services.AddTransient<IEventService, EventService>();
-            builder.Services.AddTransient<IParticipantService, ParticipantService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<IEquipmentService, EquipmentService>();
+            builder.Services.AddTransient<IForecastService, ForecastService>();
+            builder.Services.AddTransient<ISolutionService, SolutionService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddAuthorization(options =>
@@ -97,33 +98,11 @@ namespace EventsWeb
 
             app.UseCors("CorsPolicy");
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(builder.Environment.ContentRootPath, "Images")),
-                RequestPath = "/Resources",
-                OnPrepareResponse = ctx =>
-                {
-                    ctx.Context.Response.Headers.Append(
-                        "Cache-Control", "public,max-age=600");
-                    var corsService = ctx.Context.RequestServices.GetRequiredService<ICorsService>();
-                    var corsPolicyProvider = ctx.Context.RequestServices.GetRequiredService<ICorsPolicyProvider>();
-                    var policy = corsPolicyProvider.GetPolicyAsync(ctx.Context, "CorsPolicy")
-                                    .ConfigureAwait(false)
-                                    .GetAwaiter().GetResult();
-
-                    var corsResult = corsService.EvaluatePolicy(ctx.Context, policy);
-
-                    corsService.ApplyResult(corsResult, ctx.Context.Response);
-                }
-            });
-
-
             using var scope = app.Services.CreateScope();
 
-            await FillData.FillDatabaseAsync(scope.ServiceProvider.GetRequiredService<DatabaseContext>(),
-                scope.ServiceProvider.GetRequiredService<UserManager<User>>(),
-                scope.ServiceProvider.GetRequiredService<IUnitOfWork>());
+            //await FillData.FillDatabaseAsync(scope.ServiceProvider.GetRequiredService<DatabaseContext>(),
+            //    scope.ServiceProvider.GetRequiredService<UserManager<User>>(),
+            //    scope.ServiceProvider.GetRequiredService<IUnitOfWork>());
 
             app.UseHttpsRedirection();
 

@@ -1,17 +1,18 @@
-﻿using EventsWeb.DataAccess.Entities;
+﻿using Logbook.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using EventsWeb.Domain.Entities;
+using Logbook.Domain.Entities;
 
-namespace EventsWeb.DataAccess
+namespace Logbook.DataAccess
 {
     public class DatabaseContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
-        public DbSet<Event> Events { get; set; }
-        public DbSet<Participant> Participants { get; set; }
+        public DbSet<Equipment> Equipments { get; set; }
+        public DbSet<Forecast> Forecasts { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

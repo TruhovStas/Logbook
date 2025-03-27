@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using EventsWeb.BusinessLogic.Exceptions;
+using Logbook.BusinessLogic.Exceptions;
 
-namespace EventsWeb.Api.Middlewares
+namespace Logbook.Api.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {

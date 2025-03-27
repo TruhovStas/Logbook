@@ -1,4 +1,4 @@
-namespace EventsWeb.BusinessLogic.Models.Validators.Users
+namespace Logbook.BusinessLogic.Models.Validators.Users
 {
     public static class UserValidatorConfiguration
     {

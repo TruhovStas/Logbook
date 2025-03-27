@@ -1,9 +1,7 @@
-﻿using EventsWeb.BusinessLogic.Models.Participants;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using System.Reflection;
 
-namespace EventsWeb.Api
+namespace Logbook.Api
 {
     public static class SwaggerConfiguration
     {

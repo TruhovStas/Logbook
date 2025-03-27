@@ -1,9 +1,9 @@
-using EventsWeb.BusinessLogic.Models;
-using EventsWeb.BusinessLogic.Models.Users;
-using EventsWeb.BusinessLogic.Services;
+using Logbook.BusinessLogic.Models;
+using Logbook.BusinessLogic.Models.Users;
+using Logbook.BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventsWeb.Api.Controllers
+namespace Logbook.Api.Controllers
 {
     [Route("/api/auth")]
     public class UserController : ControllerBase

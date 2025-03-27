@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using EventsWeb.BusinessLogic.Models.Users;
-using EventsWeb.DataAccess.Entities;
+using Logbook.BusinessLogic.Models.Users;
+using Logbook.DataAccess.Entities;
 
-namespace EventsWeb.BusinessLogic.MappingProfiles
+namespace Logbook.BusinessLogic.MappingProfiles
 {
     public class UserProfile : Profile, IMappingProfile
     {

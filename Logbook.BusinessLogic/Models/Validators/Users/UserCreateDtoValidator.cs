@@ -1,9 +1,9 @@
 using FluentValidation;
-using EventsWeb.BusinessLogic.Models.Users;
+using Logbook.BusinessLogic.Models.Users;
 using Microsoft.AspNetCore.Identity;
-using EventsWeb.DataAccess.Entities;
+using Logbook.DataAccess.Entities;
 
-namespace EventsWeb.BusinessLogic.Models.Validators.Users
+namespace Logbook.BusinessLogic.Models.Validators.Users
 {
     public class UserCreateDtoValidator : AbstractValidator<UserCreateDto>, IValidator
     {
@@ -13,31 +13,22 @@ namespace EventsWeb.BusinessLogic.Models.Validators.Users
             _userManager = userManager;
 
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Username cannot be empty.")
+                .NotEmpty().WithMessage("Логин не может быть пустым.")
                 .MaximumLength(UserValidatorConfiguration.UserNameMaxLength)
-                .WithMessage($"Username cannot exceed {UserValidatorConfiguration.UserNameMaxLength} characters.")
+                .WithMessage($"Логин должен быть больше {UserValidatorConfiguration.UserNameMaxLength} символов.")
                 .Must(UsernameIsUnique)
-                .WithMessage("Username is not available");
+                .WithMessage("Пользователь с таким логином уже существует.");
 
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email cannot be empty.")
-                .EmailAddress().WithMessage("Email must be a valid email address.")
-                .Must(EmailAddressIsUnique)
-                .WithMessage("Email address is already in use");
+            RuleFor(x => x.Fio)
+                .NotEmpty().WithMessage("ФИО не дможет быть пустым.")
+                .WithMessage("Пользователь с таким ФИО уже существует.");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Password cannot be empty.")
+                .NotEmpty().WithMessage("Пароль не может быть пустым.")
                 .MinimumLength(UserValidatorConfiguration.PasswordMinLength)
-                .WithMessage($"Password must be at least {UserValidatorConfiguration.PasswordMinLength} characters long.")
+                .WithMessage($"Пароль должен содержать хотя бы {UserValidatorConfiguration.PasswordMinLength} символов.")
                 .MaximumLength(UserValidatorConfiguration.PasswordMaxLength)
-                .WithMessage($"Password cannot exceed {UserValidatorConfiguration.PasswordMaxLength} characters.");
-        }
-
-        private bool EmailAddressIsUnique(string email)
-        {
-            var user = _userManager.FindByEmailAsync(email).GetAwaiter().GetResult();
-
-            return user == null;
+                .WithMessage($"Пароль не может превышать {UserValidatorConfiguration.PasswordMaxLength} символов.");
         }
 
         private bool UsernameIsUnique(string username)

@@ -1,12 +1,13 @@
-﻿using EventsWeb.DataAccess.Repositories.Impl;
+﻿using Logbook.DataAccess.Repositories.Impl;
 
-namespace EventsWeb.DataAccess
+namespace Logbook.DataAccess
 {
     public interface IUnitOfWork
     {
         public Task SaveChangesAsync(CancellationToken cancellationToken);
-        public EventRepository Events { get; }
-        public ParticipantRepository Participants { get; }
+        public EquipmentRepository Equipments { get; }
+        public ForecastRepository Forecasts { get; }
+        public SolutionRepository Solutions { get; }
     }
 }
 

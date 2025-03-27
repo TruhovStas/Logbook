@@ -1,4 +1,4 @@
-﻿namespace EventsWeb.Domain.Entities
+﻿namespace Logbook.Domain.Entities
 {
     public class BaseEntity
     {

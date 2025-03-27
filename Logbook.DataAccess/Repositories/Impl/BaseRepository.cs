@@ -1,8 +1,8 @@
-﻿using EventsWeb.Domain.Entities;
+﻿using Logbook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace EventsWeb.DataAccess.Repositories.Impl
+namespace Logbook.DataAccess.Repositories.Impl
 {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity>, IDisposable where TEntity : BaseEntity
     {

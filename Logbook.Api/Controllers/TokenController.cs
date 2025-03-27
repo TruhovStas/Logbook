@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using EventsWeb.BusinessLogic.Models;
-using EventsWeb.BusinessLogic.Services;
+using Logbook.BusinessLogic.Models;
+using Logbook.BusinessLogic.Services;
 
-namespace EventsWeb.Api.Controllers
+namespace Logbook.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

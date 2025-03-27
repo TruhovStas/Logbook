@@ -1,4 +1,4 @@
-﻿namespace EventsWeb.BusinessLogic.MappingProfiles
+﻿namespace Logbook.BusinessLogic.MappingProfiles
 {
     public interface IMappingProfile
     {

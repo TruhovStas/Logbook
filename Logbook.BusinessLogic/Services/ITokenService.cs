@@ -1,7 +1,7 @@
-﻿using EventsWeb.BusinessLogic.Models;
+﻿using Logbook.BusinessLogic.Models;
 using System.Security.Claims;
 
-namespace EventsWeb.BusinessLogic.Services
+namespace Logbook.BusinessLogic.Services
 {
     public interface ITokenService
     {

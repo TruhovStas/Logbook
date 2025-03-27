@@ -1,7 +1,7 @@
-﻿using EventsWeb.Domain.Entities;
+﻿using Logbook.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace EventsWeb.DataAccess.Repositories
+namespace Logbook.DataAccess.Repositories
 {
     public interface IBaseRepository<TEntity> : IDisposable where TEntity : BaseEntity
     {

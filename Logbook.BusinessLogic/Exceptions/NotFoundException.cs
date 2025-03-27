@@ -1,4 +1,4 @@
-﻿namespace EventsWeb.BusinessLogic.Exceptions
+﻿namespace Logbook.BusinessLogic.Exceptions
 {
     public class NotFoundException : Exception
     {

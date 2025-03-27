@@ -1,11 +1,11 @@
-﻿using EventsWeb.DataAccess.Entities;
-using EventsWeb.DataAccess.Repositories;
-using EventsWeb.DataAccess.Repositories.Impl;
+﻿using Logbook.DataAccess.Entities;
+using Logbook.DataAccess.Repositories;
+using Logbook.DataAccess.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventsWeb.DataAccess
+namespace Logbook.DataAccess
 {
     public static class DependencyInjection
     {
@@ -36,8 +36,9 @@ namespace EventsWeb.DataAccess
 
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IParticipantRepository, ParticipantRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IForecastRepository, ForecastRepository>();
+            services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+            services.AddScoped<ISolutionRepository, SolutionRepository>();
         }
 
         private static void AddIdentity(this IServiceCollection services)
