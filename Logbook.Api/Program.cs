@@ -3,16 +3,12 @@ using Logbook.BusinessLogic.Services;
 using Logbook.DataAccess;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using Logbook.Api;
 using Logbook.BusinessLogic.MappingProfiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Logbook.Api.Middlewares;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.FileProviders;
-using Logbook.DataAccess.Entities;
+
 
 namespace Logbook
 {
@@ -26,7 +22,7 @@ namespace Logbook
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.ConfigureSwagger();
+            //builder.Services.ConfigureSwagger();
             builder.Services.AddDataAccess(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(IMappingProfile));
             builder.Services.AddFluentValidationAutoValidation();
@@ -37,6 +33,7 @@ namespace Logbook
             builder.Services.AddTransient<ISolutionService, SolutionService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddHttpClient();
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AuthenticatedUser", policy =>
@@ -46,6 +43,8 @@ namespace Logbook
                     policy.RequireRole("Admin"));
 
             });
+            builder.Services.AddRazorPages();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
@@ -82,19 +81,28 @@ namespace Logbook
             });
             var app = builder.Build();
 
+            app.MapRazorPages();
+            app.MapGet("/", context =>
+            {
+                context.Response.Redirect("/Login"); // замените на нужный путь
+                return Task.CompletedTask;
+            });
+
+            app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-                app.MapGet("/", context =>
-                {
-                    context.Response.Redirect("/Swagger");
-                    return Task.CompletedTask;
-                });
-            }
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //    app.MapGet("/", context =>
+            //    {
+            //        context.Response.Redirect("/Swagger");
+            //        return Task.CompletedTask;
+            //    });
+            //}
 
             app.UseCors("CorsPolicy");
 

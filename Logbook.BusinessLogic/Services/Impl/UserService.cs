@@ -67,5 +67,19 @@ namespace Logbook.BusinessLogic.Services.Impl
             return _mapper.Map<UserCreateResponseDto>(newUser);
         }
 
+        public async Task Logout(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.Now;
+
+            await _userManager.UpdateAsync(user);
+        }
+
     }
 }

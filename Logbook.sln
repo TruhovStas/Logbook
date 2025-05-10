@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logbook.DataAccess", "Logbo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logbook.Domain", "Logbook.Domain\Logbook.Domain.csproj", "{F2829951-F7DC-439B-9D5A-9DE6440D1AFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logbook.Presentation", "Logbook.Presentation\Logbook.Presentation.csproj", "{AE6C9D69-02D5-43AD-9F77-46B45219EEFD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logbook.Tests", "Logbook.Tests\Logbook.Tests.csproj", "{A0613EA7-A4D8-4C9D-99A3-F026D3E3DD95}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{F2829951-F7DC-439B-9D5A-9DE6440D1AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2829951-F7DC-439B-9D5A-9DE6440D1AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2829951-F7DC-439B-9D5A-9DE6440D1AFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE6C9D69-02D5-43AD-9F77-46B45219EEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE6C9D69-02D5-43AD-9F77-46B45219EEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE6C9D69-02D5-43AD-9F77-46B45219EEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE6C9D69-02D5-43AD-9F77-46B45219EEFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0613EA7-A4D8-4C9D-99A3-F026D3E3DD95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A0613EA7-A4D8-4C9D-99A3-F026D3E3DD95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0613EA7-A4D8-4C9D-99A3-F026D3E3DD95}.Release|Any CPU.ActiveCfg = Release|Any CPU

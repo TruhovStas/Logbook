@@ -37,23 +37,23 @@ namespace Logbook.Api.Controllers
             return Ok(await _solutionService.GetSolutionByIdAsync(id, cancellationToken));
         }
 
-        //[Authorize(Policy = "AuthenticatedUser")]
+        [Authorize(Policy = "AuthenticatedUser")]
         [HttpPost]
-        public async Task<ActionResult<SolutionCreateResponseDto>> CreateSolution([FromForm] SolutionCreateDto ev,
+        public async Task<ActionResult<SolutionCreateResponseDto>> CreateSolution([FromBody] SolutionCreateDto ev,
             CancellationToken cancellationToken)
         {
             return Ok(await _solutionService.CreateSolutionAsync(ev, cancellationToken));
         }
 
-        //[Authorize(Policy = "AuthenticatedUser")]
+        [Authorize(Policy = "AuthenticatedUser")]
         [HttpPut]
-        public async Task<ActionResult<BaseResponseDto>> UpdateSolution([FromForm] SolutionUpdateDto ev,
+        public async Task<ActionResult<BaseResponseDto>> UpdateSolution([FromBody] SolutionUpdateDto ev,
             CancellationToken cancellationToken)
         {
             return Ok(await _solutionService.UpdateSolutionAsync(ev, cancellationToken));
         }
 
-        //[Authorize(Policy = "AuthenticatedUser")]
+        [Authorize(Policy = "AuthenticatedUser")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<BaseResponseDto>> DeleteSolution(int id, CancellationToken cancellationToken)
         {

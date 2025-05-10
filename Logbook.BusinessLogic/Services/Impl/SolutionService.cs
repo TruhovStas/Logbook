@@ -47,13 +47,13 @@ namespace Logbook.BusinessLogic.Services.Impl
             CancellationToken cancellationToken)
         {
             var solution = _mapper.Map<Solution>(solutionCreateDto);
-            //var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
 
-            //if (string.IsNullOrEmpty(userName))
-            //{
-            //    throw new UnauthorizedAccessException("Не удалось получить имя пользователя из токена.");
-            //}
-            solution.Login = "a";
+            if (string.IsNullOrEmpty(userName))
+            {
+                throw new UnauthorizedAccessException("Не удалось получить имя пользователя из токена.");
+            }
+            solution.Login = userName;
             List<double> K = new List<double>();
             double avg = 0;
             for (int i = 0; i < solution.SubstanceMasses.Count(); i++)

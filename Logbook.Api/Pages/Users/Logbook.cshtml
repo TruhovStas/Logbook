@@ -1,0 +1,238 @@
+﻿@page "/Logbook"
+@{
+    ViewData["Title"] = "Журнал растворов";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        color: #333;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-box {
+        background-color: #ffffff;
+        color: #333;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 3rem;
+    }
+
+    .btn-primary {
+        background-color: #5a67d8;
+        border-color: #5a67d8;
+    }
+
+        .btn-primary:hover {
+            background-color: #434190;
+            border-color: #434190;
+        }
+
+    .btn-danger {
+        background-color: #e74c3c;
+    }
+
+    .logout-button {
+        position: fixed;
+        top: 1rem;
+        right: 2rem;
+    }
+
+    table th, table td {
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        margin-bottom: 3rem;
+    }
+
+    .logout-button {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
+    }
+
+    .btn-outline-dark {
+        background-color: ghostwhite;
+        border-color: #5a67d8;
+        color: #5a67d8;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #5a67d8;
+        color: white;
+        border-color: #434190;
+    }
+</style>
+
+
+<div class="logout-button">
+    <button class="btn btn-outline-dark" onclick="logout()">Выйти</button>
+</div>
+
+<script>
+    async function logout() {
+        const token = localStorage.getItem("jwtToken");
+
+        if (token) {
+            await fetch("/api/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+        }
+
+        localStorage.removeItem("jwtToken");
+        window.location.href = "/Login";
+    }
+</script>
+
+<div class="container container-box form-container">
+    <h2 class="text-center mb-4">Журнал титрованных растворов</h2>
+
+    <h4 class="mt-4">Добавить новый раствор</h4>
+    <form id="solution-form">
+        <div class="row mb-2">
+            <div class="col"><input name="PreparationDate" class="form-control" type="date" required></div>
+            <div class="col"><input name="ValidationDate" class="form-control" type="date" required></div>
+            <div class="col"><input name="SolutionVolume" class="form-control" type="number" step="0.01" placeholder="Объем" required></div>
+            <div class="col"><input name="StorageConditions" class="form-control" placeholder="Условия хранения" required></div>
+            <div class="col"><input name="StoragePeriod" class="form-control" placeholder="Период хранения" required></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"><input name="SolutionTemperature" class="form-control" type="number" step="0.1" placeholder="Темп." required></div>
+            <div class="col"><input name="Substance" class="form-control" placeholder="Вещество" required></div>
+            <div class="col"><input name="SubstanceMolarMass" class="form-control" type="number" step="0.01" placeholder="Мол. масса" required></div>
+            <div class="col"><input name="SubstanceConcentration" class="form-control" type="number" step="0.01" placeholder="Концентрация" required></div>
+        </div>
+        <div class="mb-2">
+            <input name="SubstanceMasses" class="form-control mb-2" placeholder="Массы (через запятую)" required>
+            <input name="SubstanceVolumes" class="form-control" placeholder="Объемы (через запятую)" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
+
+<div class="container table-container">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Дата приготовления</th>
+                <th>Дата проверки</th>
+                <th>Объем</th>
+                <th>Условия хранения</th>
+                <th>Период хранения</th>
+                <th>Температура</th>
+                <th>Вещество</th>
+                <th>Мол. масса</th>
+                <th>Концентрация</th>
+                <th>Массы</th>
+                <th>Объемы</th>
+                <th>Коэфф.</th>
+                <th>Сред. K</th>
+                <th>Логин</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="solution-table-body">
+            <!-- JS заполняет -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function fetchSolutions() {
+        const res = await fetch("/api/solution");
+        const data = await res.json();
+        const tbody = document.getElementById("solution-table-body");
+        tbody.innerHTML = "";
+
+        data.forEach(s => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                        <td>${s.id}</td>
+                        <td>${s.preparationDate}</td>
+                        <td>${s.validationDate}</td>
+                        <td>${s.solutionVolume}</td>
+                        <td>${s.storageConditions}</td>
+                        <td>${s.storagePeriod}</td>
+                        <td>${s.solutionTemperature}</td>
+                        <td>${s.substance}</td>
+                        <td>${s.substanceMolarMass}</td>
+                        <td>${s.substanceConcentration}</td>
+                        <td>${s.substanceMasses.join(", ")}</td>
+                        <td>${s.substanceVolumes.join(", ")}</td>
+                        <td>${Array.isArray(s.correctionFactors) ? s.correctionFactors.map(k => parseFloat(k.toFixed(5))).join(", ") : "-"}</td>
+                        <td>${s.avgCorrectionFactor != null ? parseFloat(s.avgCorrectionFactor.toFixed(5)) : "-"}</td>
+                        <td>${s.login}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSolution(${s.id})">Удалить</button>
+                        </td>
+                    `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function deleteSolution(id) {
+        const token = localStorage.getItem("jwtToken");
+        await fetch(`/api/solution/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        fetchSolutions();
+    }
+
+    document.getElementById("solution-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const form = e.target;
+        const token = localStorage.getItem("jwtToken");
+
+        const formData = new FormData(form);
+        const masses = formData.get("SubstanceMasses").split(",").map(x => parseFloat(x.trim()));
+        const volumes = formData.get("SubstanceVolumes").split(",").map(x => parseFloat(x.trim()));
+
+        // Проверка на совпадение количества значений в массивах
+        if (masses.length !== volumes.length) {
+            alert("Количество значений в массе и объеме должно совпадать.");
+            return; // Прерываем выполнение, если количества не совпадают
+        }
+
+        const payload = {
+            PreparationDate: formData.get("PreparationDate"),
+            ValidationDate: formData.get("ValidationDate"),
+            SolutionVolume: parseFloat(formData.get("SolutionVolume")),
+            StorageConditions: formData.get("StorageConditions"),
+            StoragePeriod: formData.get("StoragePeriod"),
+            SolutionTemperature: parseFloat(formData.get("SolutionTemperature")),
+            Substance: formData.get("Substance"),
+            SubstanceMolarMass: parseFloat(formData.get("SubstanceMolarMass")),
+            SubstanceConcentration: parseFloat(formData.get("SubstanceConcentration")),
+            SubstanceMasses: masses,
+            SubstanceVolumes: volumes
+        };
+
+        await fetch("/api/solution", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        form.reset();
+        fetchSolutions();
+    });
+    fetchSolutions();
+</script>

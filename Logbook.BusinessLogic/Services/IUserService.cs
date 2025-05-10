@@ -7,5 +7,6 @@ namespace Logbook.BusinessLogic.Services
     {
         public Task<TokenApiModel> Login(UserLoginDto userLoginDto);
         public Task<UserCreateResponseDto> Register(UserCreateDto userCreateDtoDto, CancellationToken cancellationToken);
+        public Task Logout(string username);
     }
 }
