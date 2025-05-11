@@ -19,4 +19,11 @@ namespace Logbook.BusinessLogic.Models.Solutions
         public double AvgCorrectionFactor { get; set; }
         public string Login { get; set; }
     }
+
+    public class PaginatedResult<T>
+    {
+        public IEnumerable<T> Items { get; set; }
+        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
+    }
 }

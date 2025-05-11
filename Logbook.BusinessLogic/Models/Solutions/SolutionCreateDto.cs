@@ -1,6 +1,4 @@
-﻿using Logbook.Domain.Entities;
-
-namespace Logbook.BusinessLogic.Models.Solutions
+﻿namespace Logbook.BusinessLogic.Models.Solutions
 {
     public class SolutionCreateDto
     {

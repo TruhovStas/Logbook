@@ -28,11 +28,20 @@ namespace Logbook.BusinessLogic.Services.Impl
             return _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions);
         }
 
-        public async Task<IEnumerable<SolutionResponseDto>> GetSolutionsByPageAsync(int page, int pageSize,
-            CancellationToken cancellationToken)
+        public async Task<PaginatedResult<SolutionResponseDto>> GetSolutionsByPageAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
+            var allSolution = await _unitOfWork.Solutions.GetAllAsync(cancellationToken);
             var solutions = await _unitOfWork.Solutions.GetByPageAsync(page, pageSize, cancellationToken);
-            return _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions);
+            var items = _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions);
+
+            var totalPages = (int)Math.Ceiling((double)allSolution.Count() / pageSize);
+
+            return new PaginatedResult<SolutionResponseDto>
+            {
+                Items = items,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
 
         public async Task<SolutionResponseDto> GetSolutionByIdAsync(int id, CancellationToken cancellationToken)
@@ -47,7 +56,7 @@ namespace Logbook.BusinessLogic.Services.Impl
             CancellationToken cancellationToken)
         {
             var solution = _mapper.Map<Solution>(solutionCreateDto);
-            var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
+            var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.UserData)?.Value;
 
             if (string.IsNullOrEmpty(userName))
             {
@@ -58,7 +67,10 @@ namespace Logbook.BusinessLogic.Services.Impl
             double avg = 0;
             for (int i = 0; i < solution.SubstanceMasses.Count(); i++)
             {
-                K.Add(solution.SubstanceMasses[i] * 1000 / solution.SubstanceMolarMass / solution.SubstanceConcentration / solution.SubstanceVolumes[i]);
+                K.Add(solution.SubstanceMasses[i] * 1000 /
+                    solution.SubstanceMolarMass /
+                    solution.SubstanceConcentration /
+                    solution.SubstanceVolumes[i]);
                 avg += K[i];
             }
             solution.AvgCorrectionFactor = avg / solution.SubstanceMasses.Count();

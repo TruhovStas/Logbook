@@ -75,9 +75,8 @@
 </style>
 
 
-<div class="logout-button">
-    <button class="btn btn-outline-dark" onclick="logout()">Выйти</button>
-</div>
+<div id="auth-button" class="logout-button"></div>
+
 
 <script>
     async function logout() {
@@ -99,28 +98,29 @@
 
 <div class="container container-box form-container">
     <h2 class="text-center mb-4">Журнал титрованных растворов</h2>
-
+    <div id="form-container">
     <h4 class="mt-4">Добавить новый раствор</h4>
-    <form id="solution-form">
-        <div class="row mb-2">
-            <div class="col"><input name="PreparationDate" class="form-control" type="date" required></div>
-            <div class="col"><input name="ValidationDate" class="form-control" type="date" required></div>
-            <div class="col"><input name="SolutionVolume" class="form-control" type="number" step="0.01" placeholder="Объем" required></div>
-            <div class="col"><input name="StorageConditions" class="form-control" placeholder="Условия хранения" required></div>
-            <div class="col"><input name="StoragePeriod" class="form-control" placeholder="Период хранения" required></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col"><input name="SolutionTemperature" class="form-control" type="number" step="0.1" placeholder="Темп." required></div>
-            <div class="col"><input name="Substance" class="form-control" placeholder="Вещество" required></div>
-            <div class="col"><input name="SubstanceMolarMass" class="form-control" type="number" step="0.01" placeholder="Мол. масса" required></div>
-            <div class="col"><input name="SubstanceConcentration" class="form-control" type="number" step="0.01" placeholder="Концентрация" required></div>
-        </div>
-        <div class="mb-2">
-            <input name="SubstanceMasses" class="form-control mb-2" placeholder="Массы (через запятую)" required>
-            <input name="SubstanceVolumes" class="form-control" placeholder="Объемы (через запятую)" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Добавить</button>
-    </form>
+        <form id="solution-form">
+            <div class="row mb-2">
+                <div class="col"><input name="PreparationDate" class="form-control" type="date" required></div>
+                <div class="col"><input name="ValidationDate" class="form-control" type="date" required></div>
+                <div class="col"><input name="SolutionVolume" class="form-control" type="number" step="0.01" placeholder="Объем" required></div>
+                <div class="col"><input name="StorageConditions" class="form-control" placeholder="Условия хранения" required></div>
+                <div class="col"><input name="StoragePeriod" class="form-control" placeholder="Период хранения" required></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col"><input name="SolutionTemperature" class="form-control" type="number" step="0.1" placeholder="Темп." required></div>
+                <div class="col"><input name="Substance" class="form-control" placeholder="Вещество" required></div>
+                <div class="col"><input name="SubstanceMolarMass" class="form-control" type="number" step="0.01" placeholder="Мол. масса" required></div>
+                <div class="col"><input name="SubstanceConcentration" class="form-control" type="number" step="0.01" placeholder="Концентрация" required></div>
+            </div>
+            <div class="mb-2">
+                <input name="SubstanceMasses" class="form-control mb-2" placeholder="Массы (через запятую)" required>
+                <input name="SubstanceVolumes" class="form-control" placeholder="Объемы (через запятую)" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
 </div>
 
 <div class="container table-container">
@@ -128,21 +128,21 @@
         <thead class="table-light">
             <tr>
                 <th>ID</th>
-                <th>Дата приготовления</th>
-                <th>Дата проверки</th>
-                <th>Объем</th>
-                <th>Условия хранения</th>
-                <th>Период хранения</th>
-                <th>Температура</th>
-                <th>Вещество</th>
-                <th>Мол. масса</th>
-                <th>Концентрация</th>
-                <th>Массы</th>
-                <th>Объемы</th>
-                <th>Коэфф.</th>
-                <th>Сред. K</th>
-                <th>Логин</th>
-                <th>Действия</th>
+                <th>Дата приготовления титрованного раствора</th>
+                <th>Дата проверки коэффициента поправки титрованного раствора</th>
+                <th>Объем приготовленного раствора, см3</th>
+                <th>Условия хранения титрованного раствора</th>
+                <th>Срок хранения титрованного раствора</th>
+                <th>Температура в момент измерения</th>
+                <th>Установочное вещество</th>
+                <th>Молярная масса, г/моль/дм3</th>
+                <th>Концентрация C, моль/дм3</th>
+                <th>Навеска, m, г</th>
+                <th>Объем, V, см3</th>
+                <th>Коэффициент поправки, К</th>
+                <th>Коэффициент поправки, Кср</th>
+                <th>ФИО</th>
+                <th id="delete-column">Удалить</th>
             </tr>
         </thead>
         <tbody id="solution-table-body">
@@ -150,89 +150,148 @@
         </tbody>
     </table>
 </div>
+<nav class="d-flex justify-content-center align-items-center mt-3">
+    <ul id="pagination" class="pagination mb-0"></ul>
+    <div class="ms-3 d-flex align-items-center">
+        <input id="goto-page" type="number" class="form-control" placeholder="Стр." style="width: 80px;">
+        <button class="btn btn-primary ms-2" onclick="goToPage()">Перейти</button>
+    </div>
+</nav>
+
 
 <script>
-    async function fetchSolutions() {
-        const res = await fetch("/api/solution");
+    const isGuest = new URLSearchParams(window.location.search).get("guest") === "true";
+    const token = localStorage.getItem("jwtToken");
+    console.log(isGuest);
+    console.log(token);
+    console.log(!token && !isGuest);
+    if (!token && !isGuest) {
+        window.location.href = "/Login";
+    }
+    let currentPage = 1;
+    let totalPages = 1;
+    const pageSize = 10;
+    const authBtnContainer = document.getElementById("auth-button");
+    authBtnContainer.innerHTML = isGuest
+        ? `<button class="btn btn-outline-dark" onclick="window.location.href='/Login'">Войти</button>`
+        : `<button class="btn btn-outline-dark" onclick="logout()">Выйти</button>`;
+    if (isGuest) {
+        document.getElementById("form-container").style.display = "none";
+        document.getElementById("delete-column")?.remove();
+    }
+
+    function goToPage() {
+        const input = document.getElementById("goto-page");
+        const page = parseInt(input.value);
+
+        if (isNaN(page) || page < 1 || page > totalPages) {
+            alert(`Введите номер страницы от 1 до ${totalPages}`);
+            return;
+        }
+
+        fetchSolutions(page);
+    }
+
+
+    function renderPagination(totalPages, currentPage) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        // Кнопка "Назад"
+        if (currentPage > 1) {
+            const prevLi = document.createElement("li");
+            prevLi.className = "page-item";
+            prevLi.innerHTML = `<button class="page-link" onclick="fetchSolutions(${currentPage - 1})">Назад</button>`;
+            pagination.appendChild(prevLi);
+        }
+
+        const pages = [];
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            pages.push(1);
+
+            if (currentPage > 3) pages.push("...");
+
+            for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+                if (i > 1 && i < totalPages) {
+                    pages.push(i);
+                }
+            }
+
+            if (currentPage < totalPages - 2) pages.push("...");
+
+            pages.push(totalPages);
+        }
+
+        pages.forEach(p => {
+            const li = document.createElement("li");
+
+            if (p === "...") {
+                li.className = "page-item disabled";
+                li.innerHTML = `<span class="page-link">...</span>`;
+            } else {
+                li.className = `page-item ${p === currentPage ? "active" : ""}`;
+                li.innerHTML = `<button class="page-link" onclick="fetchSolutions(${p})">${p}</button>`;
+            }
+
+            pagination.appendChild(li);
+        });
+
+        // Кнопка "Вперёд"
+        if (currentPage < totalPages) {
+            const nextLi = document.createElement("li");
+            nextLi.className = "page-item";
+            nextLi.innerHTML = `<button class="page-link" onclick="fetchSolutions(${currentPage + 1})">Вперёд</button>`;
+            pagination.appendChild(nextLi);
+        }
+    }
+
+
+    async function fetchSolutions(page = 1) {
+        currentPage = page;
+
+        const res = await fetch(`/api/solution/paged?page=${page}&pageSize=${pageSize}`);
         const data = await res.json();
         const tbody = document.getElementById("solution-table-body");
         tbody.innerHTML = "";
+        totalPages = data.totalPages;
 
-        data.forEach(s => {
+        data.items.forEach(s => {
             const tr = document.createElement("tr");
-            tr.innerHTML = `
-                        <td>${s.id}</td>
-                        <td>${s.preparationDate}</td>
-                        <td>${s.validationDate}</td>
-                        <td>${s.solutionVolume}</td>
-                        <td>${s.storageConditions}</td>
-                        <td>${s.storagePeriod}</td>
-                        <td>${s.solutionTemperature}</td>
-                        <td>${s.substance}</td>
-                        <td>${s.substanceMolarMass}</td>
-                        <td>${s.substanceConcentration}</td>
-                        <td>${s.substanceMasses.join(", ")}</td>
-                        <td>${s.substanceVolumes.join(", ")}</td>
-                        <td>${Array.isArray(s.correctionFactors) ? s.correctionFactors.map(k => parseFloat(k.toFixed(5))).join(", ") : "-"}</td>
-                        <td>${s.avgCorrectionFactor != null ? parseFloat(s.avgCorrectionFactor.toFixed(5)) : "-"}</td>
-                        <td>${s.login}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" onclick="deleteSolution(${s.id})">Удалить</button>
-                        </td>
-                    `;
+            tr.innerHTML = 
+                `<td>${s.id}</td>
+                <td>${s.preparationDate}</td>
+                <td>${s.validationDate}</td>
+                <td>${s.solutionVolume}</td>
+                <td>${s.storageConditions}</td>
+                <td>${s.storagePeriod}</td>
+                <td>${s.solutionTemperature}</td>
+                <td>${s.substance}</td>
+                <td>${s.substanceMolarMass}</td>
+                <td>${s.substanceConcentration}</td>
+                <td>${s.substanceMasses.join(", ")}</td>
+                <td>${s.substanceVolumes.join(", ")}</td>
+                <td>${Array.isArray(s.correctionFactors) ? s.correctionFactors.map(k => parseFloat(k.toFixed(5))).join(", ") : "-"}</td>
+                <td>${s.avgCorrectionFactor != null ? parseFloat(s.avgCorrectionFactor.toFixed(5)) : "-"}</td>
+                <td>${s.login}</td>`;
+
+            if (!isGuest) {
+                const deleteCell = document.createElement("td");
+                deleteCell.innerHTML = `<button class="btn btn-sm btn-danger" onclick="deleteSolution(${s.id})">Удалить</button>`;
+                tr.appendChild(deleteCell);
+            }
+
             tbody.appendChild(tr);
         });
+
+        renderPagination(data.totalPages, data.currentPage);
+        document.getElementById("goto-page").value = "";
+
     }
 
-    async function deleteSolution(id) {
-        const token = localStorage.getItem("jwtToken");
-        await fetch(`/api/solution/${id}`, {
-            method: "DELETE",
-            headers: { "Authorization": `Bearer ${token}` }
-        });
-        fetchSolutions();
-    }
-
-    document.getElementById("solution-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const form = e.target;
-        const token = localStorage.getItem("jwtToken");
-
-        const formData = new FormData(form);
-        const masses = formData.get("SubstanceMasses").split(",").map(x => parseFloat(x.trim()));
-        const volumes = formData.get("SubstanceVolumes").split(",").map(x => parseFloat(x.trim()));
-
-        // Проверка на совпадение количества значений в массивах
-        if (masses.length !== volumes.length) {
-            alert("Количество значений в массе и объеме должно совпадать.");
-            return; // Прерываем выполнение, если количества не совпадают
-        }
-
-        const payload = {
-            PreparationDate: formData.get("PreparationDate"),
-            ValidationDate: formData.get("ValidationDate"),
-            SolutionVolume: parseFloat(formData.get("SolutionVolume")),
-            StorageConditions: formData.get("StorageConditions"),
-            StoragePeriod: formData.get("StoragePeriod"),
-            SolutionTemperature: parseFloat(formData.get("SolutionTemperature")),
-            Substance: formData.get("Substance"),
-            SubstanceMolarMass: parseFloat(formData.get("SubstanceMolarMass")),
-            SubstanceConcentration: parseFloat(formData.get("SubstanceConcentration")),
-            SubstanceMasses: masses,
-            SubstanceVolumes: volumes
-        };
-
-        await fetch("/api/solution", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-        });
-
-        form.reset();
-        fetchSolutions();
-    });
-    fetchSolutions();
+    fetchSolutions()
 </script>

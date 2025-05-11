@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Logbook.Api.Middlewares;
+using Logbook.DataAccess.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Logbook
@@ -20,9 +23,7 @@ namespace Logbook
 
             // Add services to the container.
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.ConfigureSwagger();
             builder.Services.AddDataAccess(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(IMappingProfile));
             builder.Services.AddFluentValidationAutoValidation();
@@ -33,6 +34,18 @@ namespace Logbook
             builder.Services.AddTransient<ISolutionService, SolutionService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserService, UserService>();
+
+            builder.Services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+            .AddEntityFrameworkStores<DatabaseContext>()
+            .AddDefaultTokenProviders();
+
             builder.Services.AddHttpClient();
             builder.Services.AddAuthorization(options =>
             {
@@ -84,25 +97,13 @@ namespace Logbook
             app.MapRazorPages();
             app.MapGet("/", context =>
             {
-                context.Response.Redirect("/Login"); // замените на нужный путь
+                context.Response.Redirect("/Login");
                 return Task.CompletedTask;
             });
 
             app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //    app.MapGet("/", context =>
-            //    {
-            //        context.Response.Redirect("/Swagger");
-            //        return Task.CompletedTask;
-            //    });
-            //}
 
             app.UseCors("CorsPolicy");
 
