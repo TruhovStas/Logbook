@@ -206,8 +206,9 @@ namespace Logbook.DataAccess.Migrations
                     b.Property<DateOnly>("PreparationDate")
                         .HasColumnType("date");
 
-                    b.Property<double>("SolutionTemperature")
-                        .HasColumnType("float");
+                    b.Property<string>("SolutionTemperature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("SolutionVolume")
                         .HasColumnType("float");

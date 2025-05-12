@@ -106,10 +106,10 @@
                 <div class="col"><input name="ValidationDate" class="form-control" type="date" required></div>
                 <div class="col"><input name="SolutionVolume" class="form-control" type="number" step="0.01" placeholder="Объем" required></div>
                 <div class="col"><input name="StorageConditions" class="form-control" placeholder="Условия хранения" required></div>
-                <div class="col"><input name="StoragePeriod" class="form-control" placeholder="Период хранения" required></div>
+                <div class="col"><input name="StoragePeriod" class="form-control" placeholder="Срок хранения" required></div>
             </div>
             <div class="row mb-2">
-                <div class="col"><input name="SolutionTemperature" class="form-control" type="number" step="0.1" placeholder="Темп." required></div>
+                <div class="col"><input name="SolutionTemperature" class="form-control" step="0.1" placeholder="Темп." required></div>
                 <div class="col"><input name="Substance" class="form-control" placeholder="Вещество" required></div>
                 <div class="col"><input name="SubstanceMolarMass" class="form-control" type="number" step="0.01" placeholder="Мол. масса" required></div>
                 <div class="col"><input name="SubstanceConcentration" class="form-control" type="number" step="0.01" placeholder="Концентрация" required></div>
@@ -294,4 +294,49 @@
     }
 
     fetchSolutions()
+</script>
+<script>
+    document.getElementById("solution-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const dto = {
+            preparationDate: formData.get("PreparationDate"),
+            validationDate: formData.get("ValidationDate"),
+            solutionVolume: parseFloat(formData.get("SolutionVolume")),
+            storageConditions: formData.get("StorageConditions"),
+            storagePeriod: formData.get("StoragePeriod"),
+            solutionTemperature: formData.get("SolutionTemperature"),
+            substance: formData.get("Substance"),
+            substanceMolarMass: parseFloat(formData.get("SubstanceMolarMass")),
+            substanceConcentration: parseFloat(formData.get("SubstanceConcentration")),
+            substanceMasses: formData.get("SubstanceMasses").split(",").map(x => parseFloat(x.trim())),
+            substanceVolumes: formData.get("SubstanceVolumes").split(",").map(x => parseFloat(x.trim()))
+        };
+
+        try {
+            const res = await fetch("/api/solution", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`
+                },
+                body: JSON.stringify(dto)
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                alert("Ошибка при добавлении: " + errorText);
+                return;
+            }
+
+            form.reset();
+            fetchSolutions(currentPage); // обновить таблицу
+        } catch (err) {
+            console.error("Ошибка при отправке:", err);
+            alert("Произошла ошибка при отправке формы.");
+        }
+    });
 </script>

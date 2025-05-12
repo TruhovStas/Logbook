@@ -7,7 +7,7 @@
         public double SolutionVolume { get; set; }
         public string StorageConditions { get; set; }
         public string StoragePeriod { get; set; }
-        public double SolutionTemperature { get; set; }
+        public string SolutionTemperature { get; set; }
         public string Substance { get; set; }
         public double SubstanceMolarMass { get; set; }
         public double SubstanceConcentration { get; set; }

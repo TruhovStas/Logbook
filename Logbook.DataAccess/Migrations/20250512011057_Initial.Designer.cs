@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Logbook.DataAccess.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250327141210_Initial")]
+    [Migration("20250512011057_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -209,8 +209,9 @@ namespace Logbook.DataAccess.Migrations
                     b.Property<DateOnly>("PreparationDate")
                         .HasColumnType("date");
 
-                    b.Property<double>("SolutionTemperature")
-                        .HasColumnType("float");
+                    b.Property<string>("SolutionTemperature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("SolutionVolume")
                         .HasColumnType("float");

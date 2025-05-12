@@ -90,7 +90,7 @@ namespace Logbook.DataAccess.Migrations
                     SolutionVolume = table.Column<double>(type: "float", nullable: false),
                     StorageConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StoragePeriod = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SolutionTemperature = table.Column<double>(type: "float", nullable: false),
+                    SolutionTemperature = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Substance = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubstanceMolarMass = table.Column<double>(type: "float", nullable: false),
                     SubstanceConcentration = table.Column<double>(type: "float", nullable: false),
