@@ -28,11 +28,12 @@ namespace Logbook.BusinessLogic.Services.Impl
             return _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions);
         }
 
-        public async Task<PaginatedResult<SolutionResponseDto>> GetSolutionsByPageAsync(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<SolutionResponseDto>> GetSolutionsByPageAsync(int page, int pageSize,
+            string sortColumn, string sortDirection, CancellationToken cancellationToken)
         {
             var allSolution = await _unitOfWork.Solutions.GetAllAsync(cancellationToken);
             var solutions = await _unitOfWork.Solutions.GetByPageAsync(page, pageSize, cancellationToken);
-            var items = _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions);
+            var items = _mapper.Map<IEnumerable<SolutionResponseDto>>(solutions).OrderBy(s => s.PreparationDate);
 
             var totalPages = (int)Math.Ceiling((double)allSolution.Count() / pageSize);
 

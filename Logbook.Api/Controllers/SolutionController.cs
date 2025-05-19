@@ -25,11 +25,12 @@ namespace Logbook.Api.Controllers
 
         [HttpGet("paged")]
         public async Task<ActionResult<PaginatedResult<SolutionResponseDto>>> GetSolutionByPage(
-        [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+            [FromQuery] int page = 1, [FromQuery] int pageSize = 10, string sortColumn = "PreparationDate",
+            string sortDirection = "asc",CancellationToken cancellationToken = default)
         {
             if (page < 1 || pageSize < 1)
                 return BadRequest("Page and pageSize must be greater than 0.");
-            return Ok(await _solutionService.GetSolutionsByPageAsync(page, pageSize, cancellationToken));
+            return Ok(await _solutionService.GetSolutionsByPageAsync(page, pageSize, sortColumn, sortDirection, cancellationToken));
         }
 
 

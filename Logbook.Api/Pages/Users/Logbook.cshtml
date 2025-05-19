@@ -25,10 +25,10 @@
         border-color: #5a67d8;
     }
 
-        .btn-primary:hover {
-            background-color: #434190;
-            border-color: #434190;
-        }
+    .btn-primary:hover {
+        background-color: #434190;
+        border-color: #434190;
+    }
 
     .btn-danger {
         background-color: #e74c3c;
@@ -72,6 +72,15 @@
         color: white;
         border-color: #434190;
     }
+
+    .wrap-column {
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .italic-cell {
+        font-style: italic;
+    }
 </style>
 
 
@@ -96,8 +105,8 @@
     }
 </script>
 
+<h2 class="text-center mb-4">Журнал титрованных растворов</h2>
 <div class="container container-box form-container">
-    <h2 class="text-center mb-4">Журнал титрованных растворов</h2>
     <div id="form-container">
     <h4 class="mt-4">Добавить новый раствор</h4>
         <form id="solution-form">
@@ -115,29 +124,30 @@
                 <div class="col"><input name="SubstanceConcentration" class="form-control" type="number" step="0.01" placeholder="Концентрация" required></div>
             </div>
             <div class="mb-2">
-                <input name="SubstanceMasses" class="form-control mb-2" placeholder="Массы (через запятую)" required>
+                <input name="SubstanceMasses" class="form-control mb-2" placeholder="Навески (через запятую)" required>
                 <input name="SubstanceVolumes" class="form-control" placeholder="Объемы (через запятую)" required>
             </div>
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <button type="submit" class="btn btn-primary">Добавить на контроль</button>
         </form>
     </div>
 </div>
+
+<h3 class="text-center mt-5 mb-4">Журнал контроля</h3>
 
 <div class="container table-container">
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
-                <th>ID</th>
                 <th>Дата приготовления титрованного раствора</th>
                 <th>Дата проверки коэффициента поправки титрованного раствора</th>
                 <th>Объем приготовленного раствора, см3</th>
                 <th>Условия хранения титрованного раствора</th>
                 <th>Срок хранения титрованного раствора</th>
-                <th>Температура в момент измерения</th>
+                <th style="min-width: 140px;">Температура в момент измерения</th>
                 <th>Установочное вещество</th>
                 <th>Молярная масса, г/моль/дм3</th>
                 <th>Концентрация C, моль/дм3</th>
-                <th>Навеска, m, г</th>
+                <th style="min-width: 120px;">Навеска, m, г</th>
                 <th>Объем, V, см3</th>
                 <th>Коэффициент поправки, К</th>
                 <th>Коэффициент поправки, Кср</th>
@@ -171,6 +181,8 @@
     let currentPage = 1;
     let totalPages = 1;
     const pageSize = 10;
+    let currentSortColumn = "PreparationDate";
+    let currentSortDirection = "asc";
     const authBtnContainer = document.getElementById("auth-button");
     authBtnContainer.innerHTML = isGuest
         ? `<button class="btn btn-outline-dark" onclick="window.location.href='/Login'">Войти</button>`
@@ -254,7 +266,7 @@
     async function fetchSolutions(page = 1) {
         currentPage = page;
 
-        const res = await fetch(`/api/solution/paged?page=${page}&pageSize=${pageSize}`);
+        const res = await fetch(`/api/solution/paged?page=${page}&pageSize=${pageSize}&sortColumn=${currentSortColumn}&sortDirection=${currentSortDirection}`);
         const data = await res.json();
         const tbody = document.getElementById("solution-table-body");
         tbody.innerHTML = "";
@@ -263,18 +275,17 @@
         data.items.forEach(s => {
             const tr = document.createElement("tr");
             tr.innerHTML = 
-                `<td>${s.id}</td>
-                <td>${s.preparationDate}</td>
-                <td>${s.validationDate}</td>
-                <td>${s.solutionVolume}</td>
-                <td>${s.storageConditions}</td>
-                <td>${s.storagePeriod}</td>
-                <td>${s.solutionTemperature}</td>
+                `<td class="italic-cell">${s.preparationDate}</td>
+                <td class="italic-cell">${s.validationDate}</td>
+                <td class="italic-cell">${s.solutionVolume}</td>
+                <td class="italic-cell">${s.storageConditions}</td>
+                <td class="italic-cell">${s.storagePeriod}</td>
+                <td class="italic-cell">${s.solutionTemperature}</td>
                 <td>${s.substance}</td>
                 <td>${s.substanceMolarMass}</td>
                 <td>${s.substanceConcentration}</td>
-                <td>${s.substanceMasses.join(", ")}</td>
-                <td>${s.substanceVolumes.join(", ")}</td>
+                <td class="wrap-column">${s.substanceMasses.map((m, i) => `${i + 1}) ${m}`).join("\n")}</td>
+                <td class="wrap-column">${s.substanceVolumes.map((v, i) => `${i + 1}) ${v}`).join("\n")}</td>
                 <td>${Array.isArray(s.correctionFactors) ? s.correctionFactors.map(k => parseFloat(k.toFixed(5))).join(", ") : "-"}</td>
                 <td>${s.avgCorrectionFactor != null ? parseFloat(s.avgCorrectionFactor.toFixed(5)) : "-"}</td>
                 <td>${s.login}</td>`;
@@ -333,7 +344,7 @@
             }
 
             form.reset();
-            fetchSolutions(currentPage); // обновить таблицу
+            fetchSolutions(currentPage);
         } catch (err) {
             console.error("Ошибка при отправке:", err);
             alert("Произошла ошибка при отправке формы.");

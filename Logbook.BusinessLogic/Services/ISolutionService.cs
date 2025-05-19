@@ -7,7 +7,7 @@ namespace Logbook.BusinessLogic.Services
     {
         public Task<IEnumerable<SolutionResponseDto>> GetSolutionsAsync(CancellationToken cancellationToken);
         public Task<PaginatedResult<SolutionResponseDto>> GetSolutionsByPageAsync(int page, int pageSize,
-            CancellationToken cancellationToken);
+            string sortColumn, string sortDirection, CancellationToken cancellationToken);
         public Task<SolutionResponseDto> GetSolutionByIdAsync(int id, CancellationToken cancellationToken);
         public Task<SolutionCreateResponseDto> CreateSolutionAsync(SolutionCreateDto solutionCreateDto,
             CancellationToken cancellationToken);
