@@ -168,6 +168,9 @@
     </div>
 </nav>
 
+<div class="text-center mt-4">
+    <button class="btn btn-outline-dark" onclick="printCurrentPage()">Распечатать отчёт</button>
+</div>
 
 <script>
     const isGuest = new URLSearchParams(window.location.search).get("guest") === "true";
@@ -284,8 +287,8 @@
                 <td>${s.substance}</td>
                 <td>${s.substanceMolarMass}</td>
                 <td>${s.substanceConcentration}</td>
-                <td class="wrap-column">${s.substanceMasses.map((m, i) => `${i + 1}) ${m}`).join("\n")}</td>
-                <td class="wrap-column">${s.substanceVolumes.map((v, i) => `${i + 1}) ${v}`).join("\n")}</td>
+                <td class="wrap-column">${s.substanceMasses.map((m, i) => `${i + 1}) ${m}`).join("<br>")}</td>
+                <td class="wrap-column">${s.substanceVolumes.map((v, i) => `${i + 1}) ${v}`).join("<br>")}</td>
                 <td>${Array.isArray(s.correctionFactors) ? s.correctionFactors.map(k => parseFloat(k.toFixed(5))).join(", ") : "-"}</td>
                 <td>${s.avgCorrectionFactor != null ? parseFloat(s.avgCorrectionFactor.toFixed(5)) : "-"}</td>
                 <td>${s.login}</td>`;
@@ -306,6 +309,7 @@
 
     fetchSolutions()
 </script>
+
 <script>
     document.getElementById("solution-form").addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -350,4 +354,29 @@
             alert("Произошла ошибка при отправке формы.");
         }
     });
+
+    async function deleteSolution(id) {
+        if (!confirm("Вы уверены, что хотите удалить этот раствор?")) return;
+
+        try {
+            const res = await fetch(`/api/solution/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`
+                }
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                alert("Ошибка при удалении: " + errorText);
+                return;
+            }
+
+            fetchSolutions(currentPage); // Обновляем таблицу
+        } catch (err) {
+            console.error("Ошибка при удалении:", err);
+            alert("Произошла ошибка при удалении.");
+        }
+    }
 </script>
+<script src="/js/print.js"></script>

@@ -120,6 +120,8 @@ namespace Logbook
 
             app.MapControllers();
 
+            app.UseStaticFiles();
+
             app.Run();
         }
     }
