@@ -76,7 +76,7 @@
     `;
 
     const win = window.open('', '', 'height=700,width=1000');
-    win.document.write('<html><head><title>Распечатать отчёт</title>');
+    win.document.write('<html><head><title>&#8203;</title>');
     win.document.write(style);
     win.document.write('</head><body>');
     win.document.write('<h3>Отчет из журнала титрованных растворов</h3>');
