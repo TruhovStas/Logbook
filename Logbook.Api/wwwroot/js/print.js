@@ -75,7 +75,7 @@
         </style>
     `;
 
-    const win = window.open('', '', 'height=700,width=1000');
+    const win = window.open(' ', ' ', 'height=700,width=1000');
     win.document.write('<html><head><title>&#8203;</title>');
     win.document.write(style);
     win.document.write('</head><body>');
