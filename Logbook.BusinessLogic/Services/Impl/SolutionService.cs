@@ -5,6 +5,7 @@ using Logbook.BusinessLogic.Models.Solutions;
 using Logbook.DataAccess;
 using Logbook.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Logbook.BusinessLogic.Services.Impl
@@ -49,7 +50,7 @@ namespace Logbook.BusinessLogic.Services.Impl
         {
             var solution = await _unitOfWork.Solutions.GetByIdAsync(id, cancellationToken);
             if (solution == null)
-                throw new NotFoundException("Оборудование не найдено.");
+                throw new NotFoundException("Раствор не найден.");
             return _mapper.Map<SolutionResponseDto>(solution);
         }
 
@@ -58,20 +59,22 @@ namespace Logbook.BusinessLogic.Services.Impl
         {
             var solution = _mapper.Map<Solution>(solutionCreateDto);
             var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.UserData)?.Value;
+            var substance = await _unitOfWork.Substances.GetByIdAsync(solutionCreateDto.Substance.Id);
+            solution.Substance = substance;
 
             if (string.IsNullOrEmpty(userName))
             {
                 throw new UnauthorizedAccessException("Не удалось получить имя пользователя из токена.");
             }
-            solution.Login = userName;
+            solution.FIO = userName;
             List<double> K = new List<double>();
             double avg = 0;
             for (int i = 0; i < solution.SubstanceMasses.Count(); i++)
             {
                 K.Add(solution.SubstanceMasses[i] * 1000 /
-                    solution.SubstanceMolarMass /
-                    solution.SubstanceConcentration /
-                    solution.SubstanceVolumes[i]);
+                    solution.Substance.MolarMass /
+                    solution.Substance.Concentration /
+                    solution.SolutionVolumes[i]);
                 avg += K[i];
             }
             solution.AvgCorrectionFactor = avg / solution.SubstanceMasses.Count();
@@ -86,7 +89,7 @@ namespace Logbook.BusinessLogic.Services.Impl
         {
             var solution = await _unitOfWork.Solutions.GetByIdAsync(solutionUpdateDto.Id, cancellationToken);
             if (solution == null)
-                throw new NotFoundException("Оборудование не найдено.");
+                throw new NotFoundException("Раствор не найден.");
             _mapper.Map(solutionUpdateDto, solution);
             var updatedSolution = _unitOfWork.Solutions.Update(solution);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -97,7 +100,7 @@ namespace Logbook.BusinessLogic.Services.Impl
         {
             var solution = await _unitOfWork.Solutions.GetByIdAsync(id, cancellationToken);
             if (solution == null)
-                throw new NotFoundException("Solution not found");
+                throw new NotFoundException("Раствор не найден.");
             _unitOfWork.Solutions.Delete(solution);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new BaseResponseDto() { Id = id };

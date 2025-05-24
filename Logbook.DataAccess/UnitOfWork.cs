@@ -6,8 +6,9 @@ namespace Logbook.DataAccess
     {
         private DatabaseContext _dbContext;
         private EquipmentRepository _equipmentRepository;
-        private ForecastRepository _forecastRepository { get; set; }
+        private ForecastRepository _forecastRepository;
         private SolutionRepository _solutionRepository;
+        private SubstanceRepository _substanceRepository;
 
         public UnitOfWork(DatabaseContext dbContext)
         {
@@ -40,6 +41,15 @@ namespace Logbook.DataAccess
                 if (_solutionRepository == null)
                     _solutionRepository = new SolutionRepository(_dbContext);
                 return _solutionRepository;
+            }
+        }
+        public SubstanceRepository Substances
+        {
+            get
+            {
+                if (_substanceRepository == null)
+                    _substanceRepository = new SubstanceRepository(_dbContext);
+                return _substanceRepository;
             }
         }
 

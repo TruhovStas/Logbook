@@ -14,7 +14,6 @@
     }
 
 
-    // Вставить colgroup перед thead
     const colgroup = document.createElement("colgroup");
     colgroup.innerHTML = `
         <col style="width: 9%;">
@@ -23,9 +22,7 @@
         <col style="width: 7%;">
         <col style="width: 7%;">
         <col style="width: 9%;">
-        <col style="width: 5%;">
-        <col style="width: 6%;">
-        <col style="width: 6%;">
+        <col style="width: 17%;">
         <col style="width: 7%;">
         <col style="width: 5%;">
         <col style="width: 8%;">
@@ -36,7 +33,7 @@
     if (table) {
         table.insertBefore(colgroup, table.querySelector("thead"));
     }
-
+    console.log(table);
     const style = `
         <style>
             @page {
@@ -82,6 +79,7 @@
     win.document.write('<h3>Отчет из журнала титрованных растворов</h3>');
     win.document.write(tableContainer.innerHTML);
     win.document.write('</body></html>');
+    console.log(win.document);
     win.document.close();
     win.focus();
     win.print();

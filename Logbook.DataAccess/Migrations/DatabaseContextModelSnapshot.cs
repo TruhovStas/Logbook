@@ -199,7 +199,7 @@ namespace Logbook.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Login")
+                    b.Property<string>("FIO")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -213,6 +213,10 @@ namespace Logbook.DataAccess.Migrations
                     b.Property<double>("SolutionVolume")
                         .HasColumnType("float");
 
+                    b.Property<string>("SolutionVolumes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StorageConditions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -221,21 +225,10 @@ namespace Logbook.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Substance")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("SubstanceConcentration")
-                        .HasColumnType("float");
+                    b.Property<int>("SubstanceId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SubstanceMasses")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("SubstanceMolarMass")
-                        .HasColumnType("float");
-
-                    b.Property<string>("SubstanceVolumes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -244,7 +237,35 @@ namespace Logbook.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SubstanceId");
+
                     b.ToTable("Solutions");
+                });
+
+            modelBuilder.Entity("Logbook.Domain.Entities.Substance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Concentration")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Formula")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MolarMass")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Substance");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -385,6 +406,17 @@ namespace Logbook.DataAccess.Migrations
                     b.HasOne("Logbook.Domain.Entities.Forecast", null)
                         .WithMany("Equipments")
                         .HasForeignKey("ForecastId");
+                });
+
+            modelBuilder.Entity("Logbook.Domain.Entities.Solution", b =>
+                {
+                    b.HasOne("Logbook.Domain.Entities.Substance", "Substance")
+                        .WithMany()
+                        .HasForeignKey("SubstanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Substance");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

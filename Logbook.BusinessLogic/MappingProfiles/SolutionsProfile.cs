@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Logbook.BusinessLogic.Models.Equipments;
 using Logbook.BusinessLogic.Models.Solutions;
 using Logbook.Domain.Entities;
 

@@ -8,6 +8,7 @@ namespace Logbook.DataAccess
         public EquipmentRepository Equipments { get; }
         public ForecastRepository Forecasts { get; }
         public SolutionRepository Solutions { get; }
+        public SubstanceRepository Substances { get; }
     }
 }
 

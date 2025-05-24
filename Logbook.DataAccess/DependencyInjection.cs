@@ -39,6 +39,7 @@ namespace Logbook.DataAccess
             services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             services.AddScoped<ISolutionRepository, SolutionRepository>();
+            services.AddScoped<ISubstanceRepository, SubstanceRepository>();
         }
 
         private static void AddIdentity(this IServiceCollection services)

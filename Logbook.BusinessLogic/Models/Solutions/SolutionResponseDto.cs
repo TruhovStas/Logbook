@@ -10,14 +10,12 @@ namespace Logbook.BusinessLogic.Models.Solutions
         public string StorageConditions { get; set; }
         public string StoragePeriod { get; set; }
         public string SolutionTemperature { get; set; }
-        public string Substance { get; set; }
-        public double SubstanceMolarMass { get; set; }
-        public double SubstanceConcentration { get; set; }
+        public Substance Substance { get; set; }
         public virtual List<double> SubstanceMasses { get; set; } = new();
-        public virtual List<double> SubstanceVolumes { get; set; } = new();
+        public virtual List<double> SolutionVolumes { get; set; } = new();
         public virtual List<double> CorrectionFactors { get; set; } = new();
         public double AvgCorrectionFactor { get; set; }
-        public string Login { get; set; }
+        public string FIO { get; set; }
     }
 
     public class PaginatedResult<T>

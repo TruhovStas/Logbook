@@ -32,6 +32,7 @@ namespace Logbook
             builder.Services.AddTransient<IEquipmentService, EquipmentService>();
             builder.Services.AddTransient<IForecastService, ForecastService>();
             builder.Services.AddTransient<ISolutionService, SolutionService>();
+            builder.Services.AddTransient<ISubstanceService, SubstanceService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserService, UserService>();
 

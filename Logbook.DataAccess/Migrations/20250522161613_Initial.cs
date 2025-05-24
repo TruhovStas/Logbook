@@ -80,29 +80,19 @@ namespace Logbook.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Solutions",
+                name: "Substance",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PreparationDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ValidationDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    SolutionVolume = table.Column<double>(type: "float", nullable: false),
-                    StorageConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StoragePeriod = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SolutionTemperature = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Substance = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SubstanceMolarMass = table.Column<double>(type: "float", nullable: false),
-                    SubstanceConcentration = table.Column<double>(type: "float", nullable: false),
-                    SubstanceMasses = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SubstanceVolumes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CorrectionFactors = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvgCorrectionFactor = table.Column<double>(type: "float", nullable: false),
-                    Login = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Formula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Method = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MolarMass = table.Column<double>(type: "float", nullable: false),
+                    Concentration = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Solutions", x => x.Id);
+                    table.PrimaryKey("PK_Substance", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,6 +222,36 @@ namespace Logbook.DataAccess.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Solutions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PreparationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ValidationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    SolutionVolume = table.Column<double>(type: "float", nullable: false),
+                    StorageConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StoragePeriod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SolutionTemperature = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubstanceId = table.Column<int>(type: "int", nullable: false),
+                    SubstanceMasses = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SolutionVolumes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CorrectionFactors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AvgCorrectionFactor = table.Column<double>(type: "float", nullable: false),
+                    FIO = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Solutions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Solutions_Substance_SubstanceId",
+                        column: x => x.SubstanceId,
+                        principalTable: "Substance",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -275,6 +295,11 @@ namespace Logbook.DataAccess.Migrations
                 name: "IX_Equipments_ForecastId",
                 table: "Equipments",
                 column: "ForecastId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solutions_SubstanceId",
+                table: "Solutions",
+                column: "SubstanceId");
         }
 
         /// <inheritdoc />
@@ -309,6 +334,9 @@ namespace Logbook.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Forecasts");
+
+            migrationBuilder.DropTable(
+                name: "Substance");
         }
     }
 }

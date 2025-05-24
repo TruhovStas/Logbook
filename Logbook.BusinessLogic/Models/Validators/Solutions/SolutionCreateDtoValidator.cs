@@ -23,18 +23,10 @@ namespace Logbook.BusinessLogic.Models.Validators.Solutions
             RuleFor(x => x.Substance)
                 .NotEmpty().WithMessage("Установочное вещество не может быть пустым.");
 
-            RuleFor(x => x.SubstanceMolarMass)
-                .NotEmpty().WithMessage("Молярная масса не может быть пустой.")
-                .GreaterThan(0).WithMessage("Молярная масса должна быть положительной.");
-
-            RuleFor(x => x.SubstanceConcentration)
-                .NotEmpty().WithMessage("концентрация не может быть пустой.")
-                .GreaterThan(0).WithMessage("Концентрация должна быть положительной.");
-
             RuleFor(x => x.SubstanceMasses)
                 .NotEmpty().WithMessage("Навеска не может быть пустой");
 
-            RuleFor(x => x.SubstanceVolumes)
+            RuleFor(x => x.SolutionVolumes)
                 .NotEmpty().WithMessage("Объём не может быть пустой.");
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Logbook.BusinessLogic.Models.Solutions
+﻿using Logbook.Domain.Entities;
+
+namespace Logbook.BusinessLogic.Models.Solutions
 {
     public class SolutionUpdateDto : BaseResponseDto
     {
@@ -8,10 +10,8 @@
         public string StorageConditions { get; set; }
         public string StoragePeriod { get; set; }
         public string SolutionTemperature { get; set; }
-        public string Substance { get; set; }
-        public double SubstanceMolarMass { get; set; }
-        public double SubstanceConcentration { get; set; }
+        public Substance Substance { get; set; }
         public IEnumerable<double> SubstanceMasses { get; set; }
-        public IEnumerable<double> SubstanceVolumes { get; set; }
+        public IEnumerable<double> SolutionVolumes { get; set; }
     }
 }
