@@ -58,15 +58,15 @@ namespace Logbook.BusinessLogic.Services.Impl
             CancellationToken cancellationToken)
         {
             var solution = _mapper.Map<Solution>(solutionCreateDto);
-            var userName = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.UserData)?.Value;
+            var FIO = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.UserData)?.Value;
             var substance = await _unitOfWork.Substances.GetByIdAsync(solutionCreateDto.Substance.Id);
             solution.Substance = substance;
 
-            if (string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(FIO))
             {
                 throw new UnauthorizedAccessException("Не удалось получить имя пользователя из токена.");
             }
-            solution.FIO = userName;
+            solution.FIO = FIO;
             List<double> K = new List<double>();
             double avg = 0;
             for (int i = 0; i < solution.SubstanceMasses.Count(); i++)
